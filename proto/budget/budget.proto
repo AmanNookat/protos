@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+package budget;
+option go_package = "github.com/username/budget-service/proto/budget";
+
+// Определение сервиса BudgetService
+service BudgetService {
+    // Добавление транзакции (доход/расход)
+    rpc AddTransaction (TransactionRequest) returns (TransactionResponse);
+    
+    // Получение списка транзакций пользователя
+    rpc GetTransactions (GetTransactionsRequest) returns (GetTransactionsResponse);
+    
+    // Удаление транзакции
+    rpc DeleteTransaction (DeleteTransactionRequest) returns (DeleteTransactionResponse);
+    
+    // Получение текущего баланса
+    rpc GetBalance (GetBalanceRequest) returns (GetBalanceResponse);
+    
+    // Управление категориями расходов/доходов
+    rpc AddCategory (CategoryRequest) returns (CategoryResponse);
+    rpc GetCategories (GetCategoriesRequest) returns (GetCategoriesResponse);
+    
+    // Управление регулярными платежами
+    rpc AddRecurringPayment (RecurringPaymentRequest) returns (RecurringPaymentResponse);
+    rpc GetRecurringPayments (GetRecurringPaymentsRequest) returns (GetRecurringPaymentsResponse);
+}
+
+// Транзакции
+message TransactionRequest {
+    string user_id = 1;
+    string category_id = 2;
+    double amount = 3;
+    string type = 4; // "income" или "expense"
+    string timestamp = 5;
+}
+
+message TransactionResponse {
+    string transaction_id = 1;
+    string status = 2; // "success" или "error"
+}
+
+message GetTransactionsRequest {
+    string user_id = 1;
+}
+
+message GetTransactionsResponse {
+    repeated Transaction transactions = 1;
+}
+
+message DeleteTransactionRequest {
+    string transaction_id = 1;
+}
+
+message DeleteTransactionResponse {
+    string status = 1; // "success" или "error"
+}
+
+message Transaction {
+    string id = 1;
+    string category_id = 2;
+    double amount = 3;
+    string type = 4;
+    string timestamp = 5;
+}
+
+// Баланс
+message GetBalanceRequest {
+    string user_id = 1;
+}
+
+message GetBalanceResponse {
+    double total_income = 1;
+    double total_expense = 2;
+    double balance = 3;
+}
+
+// Категории
+message CategoryRequest {
+    string user_id = 1;
+    string name = 2;
+}
+
+message CategoryResponse {
+    string category_id = 1;
+    string status = 2;
+}
+
+message GetCategoriesRequest {
+    string user_id = 1;
+}
+
+message GetCategoriesResponse {
+    repeated Category categories = 1;
+}
+
+message Category {
+    string id = 1;
+    string name = 2;
+}
+
+// Регулярные платежи
+message RecurringPaymentRequest {
+    string user_id = 1;
+    string category_id = 2;
+    double amount = 3;
+    string frequency = 4; // "weekly", "monthly", "yearly"
+}
+
+message RecurringPaymentResponse {
+    string payment_id = 1;
+    string status = 2;
+}
+
+message GetRecurringPaymentsRequest {
+    string user_id = 1;
+}
+
+message GetRecurringPaymentsResponse {
+    repeated RecurringPayment payments = 1;
+}
+
+message RecurringPayment {
+    string id = 1;
+    string category_id = 2;
+    double amount = 3;
+    string frequency = 4;
+}

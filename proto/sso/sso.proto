@@ -1,38 +1,54 @@
+// Указываем, что используется синтаксис ProtoBuf версии 3
 syntax = "proto3";
 
+// Определяем пакет для этого proto-файла
+// В Go этот пакет будет доступен как "ssov1" в папке "tuzov.sso.v1"
 package auth;
-
 option go_package = "tuzov.sso.v1;ssov1";
 
+// Определение сервиса "Auth"
+// Здесь описаны методы для аутентификации
 service Auth {
+  // Метод для регистрации пользователя
+  // Принимает запрос типа RegisterRequest и возвращает ответ типа RegisterResponse
   rpc Register (RegisterRequest) returns (RegisterResponse);
+  
+  // Метод для входа пользователя (авторизация)
   rpc Login (LoginRequest) returns (LoginResponse);
+  
+  // Метод для проверки, является ли пользователь администратором
   rpc IsAdmin (IsAdminRequest) returns (IsAdminResponse);
 }
 
+// Структура запроса для регистрации пользователя
 message RegisterRequest {
   string email = 1;
   string password = 2;
 }
 
+// Структура ответа на запрос регистрации
 message RegisterResponse {
   int64 user_id = 1;
 }
 
+// Структура запроса для входа (авторизации) пользователя
 message LoginRequest {
   string email = 1;
   string password = 2;
   int32 app_id = 3;
 }
 
+// Структура ответа на запрос авторизации
 message LoginResponse {
   string token = 1;
 }
 
+// Структура запроса для проверки прав администратора
 message IsAdminRequest {
   int64 user_id = 1;
 }
 
+// Структура ответа на запрос проверки прав администратора
 message IsAdminResponse {
   bool is_admin = 1;
 }
