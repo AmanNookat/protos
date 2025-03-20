@@ -4,7 +4,7 @@
 // - protoc             v4.25.6
 // source: budget/budget.proto
 
-package budget
+package budgetv1
 
 import (
 	context "context"

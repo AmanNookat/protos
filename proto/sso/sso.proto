@@ -4,7 +4,7 @@ syntax = "proto3";
 // Определяем пакет для этого proto-файла
 // В Go этот пакет будет доступен как "ssov1" в папке "tuzov.sso.v1"
 package auth;
-option go_package = "tuzov.sso.v1;ssov1";
+option go_package = "aman.sso.v1;ssov1";
 
 // Определение сервиса "Auth"
 // Здесь описаны методы для аутентификации
