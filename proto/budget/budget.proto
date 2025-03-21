@@ -28,7 +28,7 @@ service BudgetService {
 
 // Транзакции
 message TransactionRequest {
-    string user_id = 1;
+    int64 user_id = 1;
     string category_id = 2;
     double amount = 3;
     string type = 4; // "income" или "expense"
