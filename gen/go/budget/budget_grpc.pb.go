@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,36 +20,42 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BudgetService_AddTransaction_FullMethodName       = "/budget.BudgetService/AddTransaction"
-	BudgetService_GetTransactions_FullMethodName      = "/budget.BudgetService/GetTransactions"
-	BudgetService_DeleteTransaction_FullMethodName    = "/budget.BudgetService/DeleteTransaction"
-	BudgetService_GetBalance_FullMethodName           = "/budget.BudgetService/GetBalance"
-	BudgetService_AddCategory_FullMethodName          = "/budget.BudgetService/AddCategory"
-	BudgetService_GetCategories_FullMethodName        = "/budget.BudgetService/GetCategories"
-	BudgetService_AddRecurringPayment_FullMethodName  = "/budget.BudgetService/AddRecurringPayment"
-	BudgetService_GetRecurringPayments_FullMethodName = "/budget.BudgetService/GetRecurringPayments"
+	BudgetService_AddWallet_FullMethodName          = "/budget.BudgetService/AddWallet"
+	BudgetService_GetWallets_FullMethodName         = "/budget.BudgetService/GetWallets"
+	BudgetService_GetWalletByUuid_FullMethodName    = "/budget.BudgetService/GetWalletByUuid"
+	BudgetService_UpdateWallet_FullMethodName       = "/budget.BudgetService/UpdateWallet"
+	BudgetService_DeleteWallet_FullMethodName       = "/budget.BudgetService/DeleteWallet"
+	BudgetService_AddTransaction_FullMethodName     = "/budget.BudgetService/AddTransaction"
+	BudgetService_GetTransactions_FullMethodName    = "/budget.BudgetService/GetTransactions"
+	BudgetService_GetTransactionById_FullMethodName = "/budget.BudgetService/GetTransactionById"
+	BudgetService_DeleteTransaction_FullMethodName  = "/budget.BudgetService/DeleteTransaction"
+	BudgetService_UpdateTransaction_FullMethodName  = "/budget.BudgetService/UpdateTransaction"
+	BudgetService_AddCategory_FullMethodName        = "/budget.BudgetService/AddCategory"
+	BudgetService_GetCategories_FullMethodName      = "/budget.BudgetService/GetCategories"
+	BudgetService_GetCategoryById_FullMethodName    = "/budget.BudgetService/GetCategoryById"
+	BudgetService_DeleteCategory_FullMethodName     = "/budget.BudgetService/DeleteCategory"
+	BudgetService_UpdateCategory_FullMethodName     = "/budget.BudgetService/UpdateCategory"
 )
 
 // BudgetServiceClient is the client API for BudgetService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// Определение сервиса BudgetService
 type BudgetServiceClient interface {
-	// Добавление транзакции (доход/расход)
-	AddTransaction(ctx context.Context, in *TransactionRequest, opts ...grpc.CallOption) (*TransactionResponse, error)
-	// Получение списка транзакций пользователя
+	AddWallet(ctx context.Context, in *AddWalletRequest, opts ...grpc.CallOption) (*AddWalletResponse, error)
+	GetWallets(ctx context.Context, in *GetWalletsRequest, opts ...grpc.CallOption) (*GetWalletsResponse, error)
+	GetWalletByUuid(ctx context.Context, in *GetWalletByUuidRequest, opts ...grpc.CallOption) (*GetWalletByUuidResponse, error)
+	UpdateWallet(ctx context.Context, in *UpdateWalletRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteWallet(ctx context.Context, in *DeleteWalletRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AddTransaction(ctx context.Context, in *AddTransactionRequest, opts ...grpc.CallOption) (*AddTransactionResponse, error)
 	GetTransactions(ctx context.Context, in *GetTransactionsRequest, opts ...grpc.CallOption) (*GetTransactionsResponse, error)
-	// Удаление транзакции
-	DeleteTransaction(ctx context.Context, in *DeleteTransactionRequest, opts ...grpc.CallOption) (*DeleteTransactionResponse, error)
-	// Получение текущего баланса
-	GetBalance(ctx context.Context, in *GetBalanceRequest, opts ...grpc.CallOption) (*GetBalanceResponse, error)
-	// Управление категориями расходов/доходов
-	AddCategory(ctx context.Context, in *CategoryRequest, opts ...grpc.CallOption) (*CategoryResponse, error)
+	GetTransactionById(ctx context.Context, in *GetTransactionByIdRequest, opts ...grpc.CallOption) (*GetTransactionByIdResponse, error)
+	DeleteTransaction(ctx context.Context, in *DeleteTransactionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateTransaction(ctx context.Context, in *UpdateTransactionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AddCategory(ctx context.Context, in *AddCategoryRequest, opts ...grpc.CallOption) (*AddCategoryResponse, error)
 	GetCategories(ctx context.Context, in *GetCategoriesRequest, opts ...grpc.CallOption) (*GetCategoriesResponse, error)
-	// Управление регулярными платежами
-	AddRecurringPayment(ctx context.Context, in *RecurringPaymentRequest, opts ...grpc.CallOption) (*RecurringPaymentResponse, error)
-	GetRecurringPayments(ctx context.Context, in *GetRecurringPaymentsRequest, opts ...grpc.CallOption) (*GetRecurringPaymentsResponse, error)
+	GetCategoryById(ctx context.Context, in *GetCategoryByIdRequest, opts ...grpc.CallOption) (*GetCategoryByIdResponse, error)
+	DeleteCategory(ctx context.Context, in *DeleteCategoryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateCategory(ctx context.Context, in *UpdateCategoryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type budgetServiceClient struct {
@@ -59,9 +66,59 @@ func NewBudgetServiceClient(cc grpc.ClientConnInterface) BudgetServiceClient {
 	return &budgetServiceClient{cc}
 }
 
-func (c *budgetServiceClient) AddTransaction(ctx context.Context, in *TransactionRequest, opts ...grpc.CallOption) (*TransactionResponse, error) {
+func (c *budgetServiceClient) AddWallet(ctx context.Context, in *AddWalletRequest, opts ...grpc.CallOption) (*AddWalletResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(TransactionResponse)
+	out := new(AddWalletResponse)
+	err := c.cc.Invoke(ctx, BudgetService_AddWallet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *budgetServiceClient) GetWallets(ctx context.Context, in *GetWalletsRequest, opts ...grpc.CallOption) (*GetWalletsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetWalletsResponse)
+	err := c.cc.Invoke(ctx, BudgetService_GetWallets_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *budgetServiceClient) GetWalletByUuid(ctx context.Context, in *GetWalletByUuidRequest, opts ...grpc.CallOption) (*GetWalletByUuidResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetWalletByUuidResponse)
+	err := c.cc.Invoke(ctx, BudgetService_GetWalletByUuid_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *budgetServiceClient) UpdateWallet(ctx context.Context, in *UpdateWalletRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, BudgetService_UpdateWallet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *budgetServiceClient) DeleteWallet(ctx context.Context, in *DeleteWalletRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, BudgetService_DeleteWallet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *budgetServiceClient) AddTransaction(ctx context.Context, in *AddTransactionRequest, opts ...grpc.CallOption) (*AddTransactionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddTransactionResponse)
 	err := c.cc.Invoke(ctx, BudgetService_AddTransaction_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -79,9 +136,19 @@ func (c *budgetServiceClient) GetTransactions(ctx context.Context, in *GetTransa
 	return out, nil
 }
 
-func (c *budgetServiceClient) DeleteTransaction(ctx context.Context, in *DeleteTransactionRequest, opts ...grpc.CallOption) (*DeleteTransactionResponse, error) {
+func (c *budgetServiceClient) GetTransactionById(ctx context.Context, in *GetTransactionByIdRequest, opts ...grpc.CallOption) (*GetTransactionByIdResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteTransactionResponse)
+	out := new(GetTransactionByIdResponse)
+	err := c.cc.Invoke(ctx, BudgetService_GetTransactionById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *budgetServiceClient) DeleteTransaction(ctx context.Context, in *DeleteTransactionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, BudgetService_DeleteTransaction_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -89,19 +156,19 @@ func (c *budgetServiceClient) DeleteTransaction(ctx context.Context, in *DeleteT
 	return out, nil
 }
 
-func (c *budgetServiceClient) GetBalance(ctx context.Context, in *GetBalanceRequest, opts ...grpc.CallOption) (*GetBalanceResponse, error) {
+func (c *budgetServiceClient) UpdateTransaction(ctx context.Context, in *UpdateTransactionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetBalanceResponse)
-	err := c.cc.Invoke(ctx, BudgetService_GetBalance_FullMethodName, in, out, cOpts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, BudgetService_UpdateTransaction_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *budgetServiceClient) AddCategory(ctx context.Context, in *CategoryRequest, opts ...grpc.CallOption) (*CategoryResponse, error) {
+func (c *budgetServiceClient) AddCategory(ctx context.Context, in *AddCategoryRequest, opts ...grpc.CallOption) (*AddCategoryResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CategoryResponse)
+	out := new(AddCategoryResponse)
 	err := c.cc.Invoke(ctx, BudgetService_AddCategory_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -119,20 +186,30 @@ func (c *budgetServiceClient) GetCategories(ctx context.Context, in *GetCategori
 	return out, nil
 }
 
-func (c *budgetServiceClient) AddRecurringPayment(ctx context.Context, in *RecurringPaymentRequest, opts ...grpc.CallOption) (*RecurringPaymentResponse, error) {
+func (c *budgetServiceClient) GetCategoryById(ctx context.Context, in *GetCategoryByIdRequest, opts ...grpc.CallOption) (*GetCategoryByIdResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RecurringPaymentResponse)
-	err := c.cc.Invoke(ctx, BudgetService_AddRecurringPayment_FullMethodName, in, out, cOpts...)
+	out := new(GetCategoryByIdResponse)
+	err := c.cc.Invoke(ctx, BudgetService_GetCategoryById_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *budgetServiceClient) GetRecurringPayments(ctx context.Context, in *GetRecurringPaymentsRequest, opts ...grpc.CallOption) (*GetRecurringPaymentsResponse, error) {
+func (c *budgetServiceClient) DeleteCategory(ctx context.Context, in *DeleteCategoryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetRecurringPaymentsResponse)
-	err := c.cc.Invoke(ctx, BudgetService_GetRecurringPayments_FullMethodName, in, out, cOpts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, BudgetService_DeleteCategory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *budgetServiceClient) UpdateCategory(ctx context.Context, in *UpdateCategoryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, BudgetService_UpdateCategory_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -142,23 +219,22 @@ func (c *budgetServiceClient) GetRecurringPayments(ctx context.Context, in *GetR
 // BudgetServiceServer is the server API for BudgetService service.
 // All implementations must embed UnimplementedBudgetServiceServer
 // for forward compatibility.
-//
-// Определение сервиса BudgetService
 type BudgetServiceServer interface {
-	// Добавление транзакции (доход/расход)
-	AddTransaction(context.Context, *TransactionRequest) (*TransactionResponse, error)
-	// Получение списка транзакций пользователя
+	AddWallet(context.Context, *AddWalletRequest) (*AddWalletResponse, error)
+	GetWallets(context.Context, *GetWalletsRequest) (*GetWalletsResponse, error)
+	GetWalletByUuid(context.Context, *GetWalletByUuidRequest) (*GetWalletByUuidResponse, error)
+	UpdateWallet(context.Context, *UpdateWalletRequest) (*emptypb.Empty, error)
+	DeleteWallet(context.Context, *DeleteWalletRequest) (*emptypb.Empty, error)
+	AddTransaction(context.Context, *AddTransactionRequest) (*AddTransactionResponse, error)
 	GetTransactions(context.Context, *GetTransactionsRequest) (*GetTransactionsResponse, error)
-	// Удаление транзакции
-	DeleteTransaction(context.Context, *DeleteTransactionRequest) (*DeleteTransactionResponse, error)
-	// Получение текущего баланса
-	GetBalance(context.Context, *GetBalanceRequest) (*GetBalanceResponse, error)
-	// Управление категориями расходов/доходов
-	AddCategory(context.Context, *CategoryRequest) (*CategoryResponse, error)
+	GetTransactionById(context.Context, *GetTransactionByIdRequest) (*GetTransactionByIdResponse, error)
+	DeleteTransaction(context.Context, *DeleteTransactionRequest) (*emptypb.Empty, error)
+	UpdateTransaction(context.Context, *UpdateTransactionRequest) (*emptypb.Empty, error)
+	AddCategory(context.Context, *AddCategoryRequest) (*AddCategoryResponse, error)
 	GetCategories(context.Context, *GetCategoriesRequest) (*GetCategoriesResponse, error)
-	// Управление регулярными платежами
-	AddRecurringPayment(context.Context, *RecurringPaymentRequest) (*RecurringPaymentResponse, error)
-	GetRecurringPayments(context.Context, *GetRecurringPaymentsRequest) (*GetRecurringPaymentsResponse, error)
+	GetCategoryById(context.Context, *GetCategoryByIdRequest) (*GetCategoryByIdResponse, error)
+	DeleteCategory(context.Context, *DeleteCategoryRequest) (*emptypb.Empty, error)
+	UpdateCategory(context.Context, *UpdateCategoryRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedBudgetServiceServer()
 }
 
@@ -169,29 +245,50 @@ type BudgetServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedBudgetServiceServer struct{}
 
-func (UnimplementedBudgetServiceServer) AddTransaction(context.Context, *TransactionRequest) (*TransactionResponse, error) {
+func (UnimplementedBudgetServiceServer) AddWallet(context.Context, *AddWalletRequest) (*AddWalletResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddWallet not implemented")
+}
+func (UnimplementedBudgetServiceServer) GetWallets(context.Context, *GetWalletsRequest) (*GetWalletsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWallets not implemented")
+}
+func (UnimplementedBudgetServiceServer) GetWalletByUuid(context.Context, *GetWalletByUuidRequest) (*GetWalletByUuidResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWalletByUuid not implemented")
+}
+func (UnimplementedBudgetServiceServer) UpdateWallet(context.Context, *UpdateWalletRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateWallet not implemented")
+}
+func (UnimplementedBudgetServiceServer) DeleteWallet(context.Context, *DeleteWalletRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteWallet not implemented")
+}
+func (UnimplementedBudgetServiceServer) AddTransaction(context.Context, *AddTransactionRequest) (*AddTransactionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddTransaction not implemented")
 }
 func (UnimplementedBudgetServiceServer) GetTransactions(context.Context, *GetTransactionsRequest) (*GetTransactionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTransactions not implemented")
 }
-func (UnimplementedBudgetServiceServer) DeleteTransaction(context.Context, *DeleteTransactionRequest) (*DeleteTransactionResponse, error) {
+func (UnimplementedBudgetServiceServer) GetTransactionById(context.Context, *GetTransactionByIdRequest) (*GetTransactionByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTransactionById not implemented")
+}
+func (UnimplementedBudgetServiceServer) DeleteTransaction(context.Context, *DeleteTransactionRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTransaction not implemented")
 }
-func (UnimplementedBudgetServiceServer) GetBalance(context.Context, *GetBalanceRequest) (*GetBalanceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetBalance not implemented")
+func (UnimplementedBudgetServiceServer) UpdateTransaction(context.Context, *UpdateTransactionRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTransaction not implemented")
 }
-func (UnimplementedBudgetServiceServer) AddCategory(context.Context, *CategoryRequest) (*CategoryResponse, error) {
+func (UnimplementedBudgetServiceServer) AddCategory(context.Context, *AddCategoryRequest) (*AddCategoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddCategory not implemented")
 }
 func (UnimplementedBudgetServiceServer) GetCategories(context.Context, *GetCategoriesRequest) (*GetCategoriesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCategories not implemented")
 }
-func (UnimplementedBudgetServiceServer) AddRecurringPayment(context.Context, *RecurringPaymentRequest) (*RecurringPaymentResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddRecurringPayment not implemented")
+func (UnimplementedBudgetServiceServer) GetCategoryById(context.Context, *GetCategoryByIdRequest) (*GetCategoryByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCategoryById not implemented")
 }
-func (UnimplementedBudgetServiceServer) GetRecurringPayments(context.Context, *GetRecurringPaymentsRequest) (*GetRecurringPaymentsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRecurringPayments not implemented")
+func (UnimplementedBudgetServiceServer) DeleteCategory(context.Context, *DeleteCategoryRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCategory not implemented")
+}
+func (UnimplementedBudgetServiceServer) UpdateCategory(context.Context, *UpdateCategoryRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCategory not implemented")
 }
 func (UnimplementedBudgetServiceServer) mustEmbedUnimplementedBudgetServiceServer() {}
 func (UnimplementedBudgetServiceServer) testEmbeddedByValue()                       {}
@@ -214,8 +311,98 @@ func RegisterBudgetServiceServer(s grpc.ServiceRegistrar, srv BudgetServiceServe
 	s.RegisterService(&BudgetService_ServiceDesc, srv)
 }
 
+func _BudgetService_AddWallet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddWalletRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BudgetServiceServer).AddWallet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BudgetService_AddWallet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BudgetServiceServer).AddWallet(ctx, req.(*AddWalletRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BudgetService_GetWallets_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetWalletsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BudgetServiceServer).GetWallets(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BudgetService_GetWallets_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BudgetServiceServer).GetWallets(ctx, req.(*GetWalletsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BudgetService_GetWalletByUuid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetWalletByUuidRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BudgetServiceServer).GetWalletByUuid(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BudgetService_GetWalletByUuid_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BudgetServiceServer).GetWalletByUuid(ctx, req.(*GetWalletByUuidRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BudgetService_UpdateWallet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateWalletRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BudgetServiceServer).UpdateWallet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BudgetService_UpdateWallet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BudgetServiceServer).UpdateWallet(ctx, req.(*UpdateWalletRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BudgetService_DeleteWallet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteWalletRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BudgetServiceServer).DeleteWallet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BudgetService_DeleteWallet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BudgetServiceServer).DeleteWallet(ctx, req.(*DeleteWalletRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BudgetService_AddTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TransactionRequest)
+	in := new(AddTransactionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -227,7 +414,7 @@ func _BudgetService_AddTransaction_Handler(srv interface{}, ctx context.Context,
 		FullMethod: BudgetService_AddTransaction_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BudgetServiceServer).AddTransaction(ctx, req.(*TransactionRequest))
+		return srv.(BudgetServiceServer).AddTransaction(ctx, req.(*AddTransactionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -250,6 +437,24 @@ func _BudgetService_GetTransactions_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BudgetService_GetTransactionById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTransactionByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BudgetServiceServer).GetTransactionById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BudgetService_GetTransactionById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BudgetServiceServer).GetTransactionById(ctx, req.(*GetTransactionByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BudgetService_DeleteTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteTransactionRequest)
 	if err := dec(in); err != nil {
@@ -268,26 +473,26 @@ func _BudgetService_DeleteTransaction_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BudgetService_GetBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetBalanceRequest)
+func _BudgetService_UpdateTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateTransactionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BudgetServiceServer).GetBalance(ctx, in)
+		return srv.(BudgetServiceServer).UpdateTransaction(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BudgetService_GetBalance_FullMethodName,
+		FullMethod: BudgetService_UpdateTransaction_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BudgetServiceServer).GetBalance(ctx, req.(*GetBalanceRequest))
+		return srv.(BudgetServiceServer).UpdateTransaction(ctx, req.(*UpdateTransactionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BudgetService_AddCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CategoryRequest)
+	in := new(AddCategoryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -299,7 +504,7 @@ func _BudgetService_AddCategory_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: BudgetService_AddCategory_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BudgetServiceServer).AddCategory(ctx, req.(*CategoryRequest))
+		return srv.(BudgetServiceServer).AddCategory(ctx, req.(*AddCategoryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -322,38 +527,56 @@ func _BudgetService_GetCategories_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BudgetService_AddRecurringPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RecurringPaymentRequest)
+func _BudgetService_GetCategoryById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCategoryByIdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BudgetServiceServer).AddRecurringPayment(ctx, in)
+		return srv.(BudgetServiceServer).GetCategoryById(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BudgetService_AddRecurringPayment_FullMethodName,
+		FullMethod: BudgetService_GetCategoryById_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BudgetServiceServer).AddRecurringPayment(ctx, req.(*RecurringPaymentRequest))
+		return srv.(BudgetServiceServer).GetCategoryById(ctx, req.(*GetCategoryByIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BudgetService_GetRecurringPayments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRecurringPaymentsRequest)
+func _BudgetService_DeleteCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCategoryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BudgetServiceServer).GetRecurringPayments(ctx, in)
+		return srv.(BudgetServiceServer).DeleteCategory(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: BudgetService_GetRecurringPayments_FullMethodName,
+		FullMethod: BudgetService_DeleteCategory_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BudgetServiceServer).GetRecurringPayments(ctx, req.(*GetRecurringPaymentsRequest))
+		return srv.(BudgetServiceServer).DeleteCategory(ctx, req.(*DeleteCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BudgetService_UpdateCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BudgetServiceServer).UpdateCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BudgetService_UpdateCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BudgetServiceServer).UpdateCategory(ctx, req.(*UpdateCategoryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -366,6 +589,26 @@ var BudgetService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*BudgetServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "AddWallet",
+			Handler:    _BudgetService_AddWallet_Handler,
+		},
+		{
+			MethodName: "GetWallets",
+			Handler:    _BudgetService_GetWallets_Handler,
+		},
+		{
+			MethodName: "GetWalletByUuid",
+			Handler:    _BudgetService_GetWalletByUuid_Handler,
+		},
+		{
+			MethodName: "UpdateWallet",
+			Handler:    _BudgetService_UpdateWallet_Handler,
+		},
+		{
+			MethodName: "DeleteWallet",
+			Handler:    _BudgetService_DeleteWallet_Handler,
+		},
+		{
 			MethodName: "AddTransaction",
 			Handler:    _BudgetService_AddTransaction_Handler,
 		},
@@ -374,12 +617,16 @@ var BudgetService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BudgetService_GetTransactions_Handler,
 		},
 		{
+			MethodName: "GetTransactionById",
+			Handler:    _BudgetService_GetTransactionById_Handler,
+		},
+		{
 			MethodName: "DeleteTransaction",
 			Handler:    _BudgetService_DeleteTransaction_Handler,
 		},
 		{
-			MethodName: "GetBalance",
-			Handler:    _BudgetService_GetBalance_Handler,
+			MethodName: "UpdateTransaction",
+			Handler:    _BudgetService_UpdateTransaction_Handler,
 		},
 		{
 			MethodName: "AddCategory",
@@ -390,12 +637,16 @@ var BudgetService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BudgetService_GetCategories_Handler,
 		},
 		{
-			MethodName: "AddRecurringPayment",
-			Handler:    _BudgetService_AddRecurringPayment_Handler,
+			MethodName: "GetCategoryById",
+			Handler:    _BudgetService_GetCategoryById_Handler,
 		},
 		{
-			MethodName: "GetRecurringPayments",
-			Handler:    _BudgetService_GetRecurringPayments_Handler,
+			MethodName: "DeleteCategory",
+			Handler:    _BudgetService_DeleteCategory_Handler,
+		},
+		{
+			MethodName: "UpdateCategory",
+			Handler:    _BudgetService_UpdateCategory_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

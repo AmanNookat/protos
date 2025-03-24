@@ -1,128 +1,258 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
 package budget;
 option go_package = "aman.budget.v1;budgetv1";
 
-// Определение сервиса BudgetService
 service BudgetService {
-    // Добавление транзакции (доход/расход)
-    rpc AddTransaction (TransactionRequest) returns (TransactionResponse);
-    
-    // Получение списка транзакций пользователя
+    rpc AddWallet (AddWalletRequest) returns (AddWalletResponse); 
+    rpc GetWallets (GetWalletsRequest) returns (GetWalletsResponse);
+    rpc GetWalletByUuid (GetWalletByUuidRequest) returns (GetWalletByUuidResponse);
+    rpc UpdateWallet (UpdateWalletRequest) returns (google.protobuf.Empty);
+    rpc DeleteWallet (DeleteWalletRequest) returns (google.protobuf.Empty);
+
+    rpc AddTransaction (AddTransactionRequest) returns (AddTransactionResponse);
     rpc GetTransactions (GetTransactionsRequest) returns (GetTransactionsResponse);
+    rpc GetTransactionById (GetTransactionByIdRequest) returns (GetTransactionByIdResponse);
+    rpc DeleteTransaction (DeleteTransactionRequest) returns (google.protobuf.Empty);
+    rpc UpdateTransaction(UpdateTransactionRequest) returns (google.protobuf.Empty);
     
-    // Удаление транзакции
-    rpc DeleteTransaction (DeleteTransactionRequest) returns (DeleteTransactionResponse);
-    
-    // Получение текущего баланса
-    rpc GetBalance (GetBalanceRequest) returns (GetBalanceResponse);
-    
-    // Управление категориями расходов/доходов
-    rpc AddCategory (CategoryRequest) returns (CategoryResponse);
+    rpc AddCategory (AddCategoryRequest) returns (AddCategoryResponse);
     rpc GetCategories (GetCategoriesRequest) returns (GetCategoriesResponse);
+    rpc GetCategoryById (GetCategoryByIdRequest) returns (GetCategoryByIdResponse);
+    rpc DeleteCategory (DeleteCategoryRequest) returns (google.protobuf.Empty);
+    rpc UpdateCategory (UpdateCategoryRequest) returns (google.protobuf.Empty);
     
-    // Управление регулярными платежами
-    rpc AddRecurringPayment (RecurringPaymentRequest) returns (RecurringPaymentResponse);
-    rpc GetRecurringPayments (GetRecurringPaymentsRequest) returns (GetRecurringPaymentsResponse);
+    // rpc AddRecurringPayment (RecurringPaymentRequest) returns (RecurringPaymentResponse);
+    // rpc GetRecurringPayments (GetRecurringPaymentsRequest) returns (GetRecurringPaymentsResponse);
+
+    // rpc GetBalance (GetBalanceRequest) returns (GetBalanceResponse);
+}
+
+// Кошелек
+message Wallet {
+    string uuid = 1;
+    int64 user_id = 2;
+    string name = 3;
+    double amount = 4;
+    bool is_base = 5;
+    string family_uuid = 6;
+}
+
+message AddWalletRequest {
+    int64 user_id = 1;
+    string name = 2;
+    double amount = 3;
+    bool is_base = 4;
+    string family_uuid = 5;
+}
+
+message AddWalletResponse {
+    string uuid = 1;
+}
+
+message GetWalletsRequest {
+    int64 user_id = 1;
+    string family_uuid = 2;
+}
+
+message GetWalletsResponse {
+    repeated Wallet wallets = 1;
+}
+
+message GetWalletByUuidRequest {
+    string uuid = 1;
+}
+
+message GetWalletByUuidResponse {
+    Wallet wallet = 1;
+}
+
+message UpdateWalletRequest {
+    string uuid = 1;
+    int64 user_id = 2;
+    string name = 3;
+    bool is_base = 4;
+    string family_uuid = 5;
+    double amount = 6;
+}
+
+message DeleteWalletRequest {
+    string wallet_uuid = 1;
 }
 
 // Транзакции
-message TransactionRequest {
-    int64 user_id = 1;
-    int64 category_id = 2;
-    double amount = 3;
-    string type = 4; // "income" или "expense"
-    string timestamp = 5;
+message Transaction {
+    int64 id = 1;
+    string wallet_uuid = 2;
+    int64 category_id = 3;
+    repeated int64 tag_ids = 4;
+    double amount = 5;
+    FlowType flow_type = 6;
+    google.protobuf.Timestamp date = 7;
+    google.protobuf.Timestamp created_at = 8;
+    string comment = 9;
 }
 
-message TransactionResponse {
+message AddTransactionRequest {
+    string wallet_uuid = 1;
+    int64 category_id = 2;
+    repeated int64 tag_ids = 3;
+    double amount = 4;
+    FlowType flow_type = 5;
+    google.protobuf.Timestamp date = 6;
+    google.protobuf.Timestamp created_at = 7;
+    string comment = 8;
+}
+
+message AddTransactionResponse {
     int64 transaction_id = 1;
-    string status = 2; // "success" или "error"
 }
 
 message GetTransactionsRequest {
-    int64 user_id = 1;
+    string wallet_uuid = 1;
+  
+    google.protobuf.Timestamp from_date = 2;
+    google.protobuf.Timestamp to_date = 3;
+  
+    FlowType flow_type = 4;
+  
+    int64 category_id = 5;
+  
+    repeated int64 tag_ids = 6;
+  
+    double min_amount = 7;
+    double max_amount = 8;
+  
+    string search = 9;
+
+    int32 limit = 10;
+    int32 offset = 11;
 }
 
 message GetTransactionsResponse {
     repeated Transaction transactions = 1;
 }
 
+message GetTransactionByIdRequest {
+    int64 transaction_id = 1;
+}
+
+message GetTransactionByIdResponse {
+    Transaction transaction = 1;
+}
+
 message DeleteTransactionRequest {
     int64 transaction_id = 1;
 }
 
-message DeleteTransactionResponse {
-    string status = 1; // "success" или "error"
+message UpdateTransactionRequest {
+    int64 transaction_id = 1;
+    string wallet_uuid = 2;
+    int64 category_id = 3;
+    repeated int64 tag_ids = 4;
+    double amount = 5;
+    FlowType flow_type = 6;
+    google.protobuf.Timestamp date = 7;
+    string comment = 8;
 }
 
-message Transaction {
-    int64 id = 1;
-    int64 category_id = 2;
-    double amount = 3;
-    string type = 4;
-    string timestamp = 5;
-}
-
-// Баланс
-message GetBalanceRequest {
-    int64 user_id = 1;
-}
-
-message GetBalanceResponse {
-    double total_income = 1;
-    double total_expense = 2;
-    double balance = 3;
+// Тип операции (доход или расход)
+enum FlowType {
+    EXPENSE = 0; // расход
+    INCOME = 1; // доход
 }
 
 // Категории
-message CategoryRequest {
-    int64 user_id = 1;
+message Category {
+    int64 id = 1;
     string name = 2;
+    string color = 3;
+    double plan_amount = 4;
+    FlowType flow_type = 5;
+    int64 user_id = 6;
+    int64 family_id = 7;
 }
 
-message CategoryResponse {
+message AddCategoryRequest {
+    int64 user_id = 1;
+    int64 family_id = 2;
+    string name = 3;
+    string color = 4;
+    double plan_amount = 5;
+    FlowType flow_type = 6;
+}
+
+message AddCategoryResponse {
     int64 category_id = 1;
-    string status = 2;
 }
 
 message GetCategoriesRequest {
     int64 user_id = 1;
+    int64 family_id = 2;
 }
 
 message GetCategoriesResponse {
     repeated Category categories = 1;
 }
 
-message Category {
+message GetCategoryByIdRequest {
+    int64 category_id = 1;
+}
+
+message GetCategoryByIdResponse {
+    Category category = 1;
+}
+
+message DeleteCategoryRequest {
+    int64 category_id = 1;
+}
+
+message UpdateCategoryRequest {
     int64 id = 1;
     string name = 2;
+    string color = 3;
+    double plan_amount = 4;
+    FlowType flow_type = 5;
 }
 
-// Регулярные платежи
-message RecurringPaymentRequest {
-    int64 user_id = 1;
-    int64 category_id = 2;
-    double amount = 3;
-    string frequency = 4; // "weekly", "monthly", "yearly"
-}
+// // Регулярные платежи
+// message RecurringPaymentRequest {
+//     int64 user_id = 1;
+//     int64 category_id = 2;
+//     double amount = 3;
+//     string frequency = 4; // "weekly", "monthly", "yearly"
+// }
 
-message RecurringPaymentResponse {
-    int64 payment_id = 1;
-    string status = 2;
-}
+// message RecurringPaymentResponse {
+//     int64 payment_id = 1;
+//     string status = 2;
+// }
 
-message GetRecurringPaymentsRequest {
-    int64 user_id = 1;
-}
+// message GetRecurringPaymentsRequest {
+//     int64 user_id = 1;
+// }
 
-message GetRecurringPaymentsResponse {
-    repeated RecurringPayment payments = 1;
-}
+// message GetRecurringPaymentsResponse {
+//     repeated RecurringPayment payments = 1;
+// }
 
-message RecurringPayment {
-    int64 id = 1;
-    int64 category_id = 2;
-    double amount = 3;
-    string frequency = 4;
-}
+// message RecurringPayment {
+//     int64 id = 1;
+//     int64 category_id = 2;
+//     double amount = 3;
+//     string frequency = 4;
+// }
+
+// // Баланс
+// message GetBalanceRequest {
+//     int64 user_id = 1;
+// }
+
+// message GetBalanceResponse {
+//     double total_income = 1;
+//     double total_expense = 2;
+//     double balance = 3;
+// }
