@@ -50,7 +50,7 @@ message AddWalletRequest {
 }
 
 message AddWalletResponse {
-    string uuid = 1;
+    string wallet_uuid = 1;
 }
 
 message GetWalletsRequest {
@@ -71,7 +71,7 @@ message GetWalletByUuidResponse {
 }
 
 message UpdateWalletRequest {
-    string uuid = 1;
+    string wallet_uuid = 1;
     int64 user_id = 2;
     string name = 3;
     bool is_base = 4;
