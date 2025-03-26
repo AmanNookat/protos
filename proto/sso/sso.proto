@@ -18,6 +18,8 @@ service Auth {
   
   // Метод для проверки, является ли пользователь администратором
   rpc IsAdmin (IsAdminRequest) returns (IsAdminResponse);
+
+  rpc IsUserExists (IsUserExistsRequest) returns (IsUserExistsResponse);
 }
 
 // Структура запроса для регистрации пользователя
@@ -51,4 +53,12 @@ message IsAdminRequest {
 // Структура ответа на запрос проверки прав администратора
 message IsAdminResponse {
   bool is_admin = 1;
+}
+
+message IsUserExistsRequest {
+  int64 user_id = 1;
+}
+
+message IsUserExistsResponse {
+  bool exists = 1;
 }
